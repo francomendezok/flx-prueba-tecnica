@@ -1,33 +1,35 @@
 import { useState } from 'react'
 import { Modal } from 'antd'
-import axios from 'axios'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { deleteUserFromDB } from '../redux/userSlice'
 
-const PopModal = ({ user, onDelete }) => {
+
+const DeleteUserButton = ({ user }) => {
     const fullname = `${user.name}${user.lastname}`.toLowerCase()
     const [open, setOpen] = useState(false)
-    const [confirmLoading, setConfirmLoading] = useState(false)
+    const [confirmLoading, setConfirmLoading] = useState(false) // efecto visual del boton OK //
     const [modalText, setModalText] = useState(`¿Está seguro que quiere eliminar el usuario @${fullname}?`)
+    const dispatch = useDispatch()
 
     const showModal = () => {
         setOpen(true)
-    };
+    }
 
-    const handleOk = () => {
+    const handleOk = async () => {
         setModalText('Eliminando usuario...')
         setConfirmLoading(true)
-        axios.delete(`http://localhost:4000/users/${user.id}`)
+        await dispatch(deleteUserFromDB(user.id))
         .then(() => {
             setConfirmLoading(false)
-            setOpen(false)
-            onDelete(user.id)
+            setOpen(false) // cierro el form //
         })
         .catch((error) => {
             setConfirmLoading(false)
             setModalText('Error eliminando usuario')
             console.error('Error eliminando usuario:', error)
-        });
-    };
+        })
+    }
 
     const handleCancel = () => {
         setOpen(false)
@@ -53,9 +55,8 @@ const PopModal = ({ user, onDelete }) => {
     )
 }
 
-PopModal.propTypes = {
-    user: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired,
-  }
+DeleteUserButton.propTypes = {
+    user: PropTypes.object.isRequired
+}
 
-export default PopModal
+export default DeleteUserButton

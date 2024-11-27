@@ -1,28 +1,21 @@
 import { useEffect } from 'react'
-import { Table, Tag, Space } from 'antd'
+import { Table, Tag, Space, Spin } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUsers } from '../redux/slices/userSlice'
-import PopModal from './Modal'
-import axios from 'axios'
+import { fetchUsers } from '../redux/userSlice'
+import DeleteUserButton from './DeleteUser'
+import EditUserButton from './EditUser'
+import useLoading from './UseLoading'
+
 
 const Tabla = () => {
   const dispatch = useDispatch()
-
-  const { users, loading, error } = useSelector((state) => state.users) // estado a traves de redux // 
+  const { loading } = useLoading() // custom hook para manejo de loading // 
+  const { users, error } = useSelector((state) => state.users) // estado a traves de redux // 
 
   useEffect(() => {
     dispatch(fetchUsers())
   }, [dispatch])
 
-  async function handleDelete (userId) {
-    try {
-      await axios.delete(`http://localhost:4000/users/${userId}`)
-      console.log("Delete successfully")
-      
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   const columns = [
     {
@@ -59,19 +52,24 @@ const Tabla = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <a>Editar</a>
-          <PopModal user={record} onDelete={handleDelete} /> {/* Reemplaza al tag <a> para Eliminar */}
+          <EditUserButton user={record} />
+          <DeleteUserButton user={record} /> {/* en reemplazo del tag <a> para Eliminar */}
         </Space>
       ),
-    },
-  ];
+    }
+  ]
 
   if (loading) {
-    return <p>Cargando usuarios...</p>
+    return (
+      <div className='loading-users'>
+        <h1>Cargando usuarios...</h1>
+        <Spin size='large'/>
+      </div>
+    )
   }
 
   if (error) {
-    return <p>Error al cargar usuarios: {error}</p>
+    return <h1>Error al cargar usuarios</h1>
   }
 
   return <Table columns={columns} dataSource={users} rowKey="id" className="table" size="large" />

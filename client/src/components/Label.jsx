@@ -5,7 +5,7 @@ const Label= () => (
   className='label-location'
   items={[
     { title: 'Usuarios', key: 'Usuarios' },
-    { title: 'Listado de usuarios', key: 'Listado de usuarios' },
+    { title: 'Listado de usuarios', key: 'Listado de usuarios' }
   ]}
 />
 )

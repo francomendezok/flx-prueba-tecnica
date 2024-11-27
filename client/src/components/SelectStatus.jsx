@@ -1,6 +1,6 @@
 import { Select } from 'antd'
 import { useDispatch } from 'react-redux'
-import { setFilterStatus, setUsers } from '../redux/slices/userSlice'
+import { setFilterStatus, setUsers } from '../redux/userSlice'
 
 function SelectStatus() {
   const dispatch = useDispatch()
@@ -11,7 +11,7 @@ function SelectStatus() {
       return
     }   
     dispatch(setFilterStatus(value))
-  };
+  }
 
   return (
     <Select
@@ -21,10 +21,10 @@ function SelectStatus() {
       options={[
         { value: 'todos', label: 'Todos' }, 
         { value: 'activo', label: 'Activo' },
-        { value: 'inactivo', label: 'Inactivo' },
+        { value: 'inactivo', label: 'Inactivo' }
       ]}
     />
-  );
+  )
 }
 
-export default SelectStatus;
+export default SelectStatus

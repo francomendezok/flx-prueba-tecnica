@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import usersReducer from './slices/userSlice'
+import usersReducer from './userSlice'
 
 
 export const store = configureStore({
     reducer: {
-      users: usersReducer,  // maneja el estado de los usuarios de manera global con este slice // 
-    },
+      users: usersReducer,  // manejamos el estado de los usuarios de manera global con este slice // 
+    }
   })

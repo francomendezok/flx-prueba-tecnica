@@ -1,97 +1,98 @@
 import { useState } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select } from 'antd'
-const { Option } = Select
+import PropTypes from 'prop-types'
+import { updateUserFromDB } from '../redux/userSlice'
 import { useDispatch } from 'react-redux'
-import { createNewUser } from '../redux/userSlice'
 
-const AddUserButton = () => {
+const { Option } = Select
+
+const EditUserButton = ({ user }) => {
   const [visible, setVisible] = useState(false)
-  const [form] = Form.useForm() // para limpiar el form // 
   const dispatch = useDispatch()
 
   const showModal = () => {
     setVisible(true)
-    form.resetFields()
   }
 
   const handleCancel = () => {
     setVisible(false)
   }
 
-
-  const handleCreate = async (values) => {
-    try {
-      const age = Number(values.age)
-      
-      dispatch(createNewUser({...values, age}))
-
-      setVisible(false)
-    } catch (error) {
-      console.log(`Hubo un error al crear el usuario ${error}`)
-    }
+  const handleCreate = (values) => {
+    const age = Number(values.age)
+    dispatch(updateUserFromDB({ userID: user.id, userData: values, age })) // paso correctamente los parametros // 
+    setVisible(false)
   }
 
   return (
     <>
-      <Button type="primary" size="medium" onClick={showModal}>
-        Agregar usuario
-      </Button>
-
-      <Modal title="Crear Usuario" open={visible} onCancel={handleCancel} footer={null}>    
-        <Form layout="vertical" requiredMark="optional" onFinish={handleCreate} form={form}>
+      <a onClick={showModal}>Editar</a>
+      <Modal title="Editar Usuario" open={visible} onCancel={handleCancel} footer={null}>
+        <Form
+          layout="vertical"
+          requiredMark="optional" 
+          onFinish={handleCreate} 
+          initialValues={{
+            username: user.username,
+            name: user.name,
+            status: user.status,
+            email: user.email,
+            lastname: user.lastname,
+            age: user.age
+        }}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label="Usuario"
-                name="username" 
+                name="username"
                 rules={[
                   { required: true, message: 'Por favor ingresa un nombre de usuario' },
                   { type: 'string', message: 'Debe ser un texto válido' }
                 ]}
               >
-                <Input placeholder="johndoe" />
+                <Input placeholder={user.username}  />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="Email"
-                name="email" 
+                name="email"
                 rules={[
                   { required: true, message: 'Por favor ingresa un correo' },
                   { type: 'email', message: 'Por favor ingresa un correo válido' }
                 ]}
               >
-                <Input placeholder="johndoe@domain.com" />
+                <Input placeholder={user.email} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="Nombre"
-                name="name" 
+                name="name"
                 rules={[
                   { required: true, message: 'Por favor ingresa un nombre' },
                   { type: 'string', message: 'Debe ser un texto válido' }
                 ]}
               >
-                <Input placeholder="John" />
+                <Input placeholder={user.name} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="Apellido"
-                name="lastname" 
+                name="lastname"
                 rules={[
                   { required: true, message: 'Por favor ingresa un apellido' },
                   { type: 'string', message: 'Debe ser un texto válido' }
                 ]}
               >
-                <Input placeholder="Doe" />
+                <Input placeholder={user.lastname} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="Estado"
-                name="status" 
+                name="status"
                 rules={[
                   { required: true, message: 'Por favor selecciona un estado' },
                   {
@@ -102,30 +103,28 @@ const AddUserButton = () => {
                   }
                 ]}
               >
-                <Select placeholder="Seleccione un estado">
-                  <Option value="activo">activo</Option>
-                  <Option value="inactivo">inactivo</Option>
+                <Select placeholder={user.status}>
+                  <Option value="activo">Activo</Option>
+                  <Option value="inactivo">Inactivo</Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 label="Edad"
-                name="age" 
+                name="age"
                 rules={[
                   { required: true, message: 'Por favor ingresa una edad' },
                   { type: 'string', message: 'Debe ser un número'}
                 ]}
               >
-                <Input placeholder="43" type="number" min={1} />
+                <Input placeholder={user.age} type="number" />
               </Form.Item>
             </Col>
           </Row>
-
-          {/* boton de submit del form */}
           <div className='submit-box'>
             <Button type="primary" htmlType="submit">
-              Agregar Usuario
+              Editar Usuario
             </Button>
           </div>
         </Form>
@@ -134,4 +133,8 @@ const AddUserButton = () => {
   )
 }
 
-export default AddUserButton
+EditUserButton.propTypes = {
+  user: PropTypes.object.isRequired,
+}
+
+export default EditUserButton

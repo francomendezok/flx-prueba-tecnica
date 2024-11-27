@@ -1,7 +1,7 @@
 import { Input } from 'antd'
 const { Search } = Input
 import { useDispatch } from 'react-redux'
-import { setFilterName } from '../redux/slices/userSlice'
+import { setFilterName } from '../redux/userSlice'
 
 function SearchBox () {
     const dispatch = useDispatch()
@@ -15,16 +15,7 @@ function SearchBox () {
         dispatch(setFilterName(value))
     }
 
-        
-
-    return (
-        <Search 
-            placeholder="Buscar usuario" 
-            className='search-button'
-            onSearch={handleSearch}  
-            onPressEnter={handleEnter}
-        />
-    )
+    return <Search placeholder="Buscar usuario" className='search-button' onSearch={handleSearch} onPressEnter={handleEnter}/>
 }
     
 
